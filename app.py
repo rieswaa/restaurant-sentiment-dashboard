@@ -136,62 +136,18 @@ with col_neg:
     else:
         st.write("⚠️ Tidak ada review negatif untuk filter saat ini.")
 
-# 🔠 Kata Populer
-st.markdown("### 🔠 Kata yang Sering Muncul dalam Review")
+# 📌 Kesimpulan Alasan Rating
+st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
+st.markdown("""
+**✅ Positif:**
+- Pengguna puas dengan menu seperti *paratha*, *ginger tea*, *apple pie*.
+- Cita rasa dan kualitas makanan menjadi alasan utama memberikan rating tinggi.
+- Kata seperti **loved**, **best**, dan **tastier** sering muncul.
 
-def clean_text(text):
-    text = re.sub(r'[^\w\s]', '', str(text))
-    return text.lower()
-
-def get_top_words(series, n=10):
-    words = ' '.join(series.dropna().map(clean_text)).split()
-    return pd.DataFrame(Counter(words).most_common(n), columns=['Kata', 'Frekuensi'])
-
-col_word1, col_word2 = st.columns(2)
-with col_word1:
-    st.markdown("**✅ Review Positif - Top Kata**")
-    top_pos_words = get_top_words(filtered_df[filtered_df['Sentiment'] == 'Positive']['Review'])
-    st.dataframe(top_pos_words)
-
-with col_word2:
-    st.markdown("**❌ Review Negatif - Top Kata**")
-    top_neg_words = get_top_words(filtered_df[filtered_df['Sentiment'] == 'Negative']['Review'])
-    st.dataframe(top_neg_words)
-
-# 📌 Kesimpulan Analisis
-st.markdown("### 📌 Kesimpulan Analisis Rating & Sentimen")
-total = len(filtered_df)
-if total > 0:
-    pos_percent = (filtered_df['Sentiment'] == 'Positive').mean() * 100
-    neg_percent = (filtered_df['Sentiment'] == 'Negative').mean() * 100
-    neu_percent = (filtered_df['Sentiment'] == 'Neutral').mean() * 100
-    avg_rating = filtered_df['Rating'].mean()
-
-    if pos_percent > 60:
-        conclusion = "⭐ Mayoritas review menunjukkan **kepuasan pelanggan**. Rating dan sentimen tergolong **baik**."
-    elif neg_percent > 50:
-        conclusion = "⚠️ Mayoritas review menunjukkan **ketidakpuasan pelanggan**. Rating dan sentimen tergolong **buruk**."
-    else:
-        conclusion = "➖ Review menunjukkan **pendapat yang bervariasi**. Data rating bersifat **campuran atau netral**."
-
-    st.markdown(f"""
-    **Total Review:** {total}  
-    **Rata-rata Rating:** {avg_rating:.2f}  
-    **Positif:** {pos_percent:.1f}% | **Negatif:** {neg_percent:.1f}% | **Netral:** {neu_percent:.1f}%
-    
-    👉 **Kesimpulan:** {conclusion}
-    """)
-
-    # 📢 Alasan umum
-    st.markdown("### 📢 Alasan Umum dari Review")
-    common_pos = [w for w in top_pos_words['Kata'] if w not in ['the', 'and', 'was', 'very', 'for', 'with']]
-    common_neg = [w for w in top_neg_words['Kata'] if w not in ['the', 'and', 'was', 'very', 'for', 'with']]
-    reason_pos = f"🔹 **Alasan Positif**: Pelanggan menyukai hal-hal seperti _**{'**, **'.join(common_pos[:5])}**_."
-    reason_neg = f"🔻 **Alasan Negatif**: Pelanggan mengeluh tentang _**{'**, **'.join(common_neg[:5])}**_."
-    st.markdown(reason_pos)
-    st.markdown(reason_neg)
-else:
-    st.warning("⚠️ Tidak ada data yang tersedia untuk dianalisis.")
+**❌ Negatif:**
+- Pengguna kecewa karena porsi kecil (*half cup tea*), pengalaman buruk, atau pelayanan tidak memuaskan.
+- Alasan kuat lainnya adalah kata seperti **worst**, **looting**, dan **ignored**.
+""")
 
 # 📥 Download Data
 csv = filtered_df.to_csv(index=False).encode('utf-8')
