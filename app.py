@@ -4,8 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from textblob import TextBlob
-from collections import Counter
-import re
 
 # 🎨 Setup halaman
 st.set_page_config(page_title="Restaurant Sentiment", layout="wide")
@@ -139,14 +137,25 @@ with col_neg:
 # 📌 Kesimpulan Alasan Rating
 st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
 st.markdown("""
-**✅ Positif:**
-- Pengguna puas dengan menu seperti *paratha*, *ginger tea*, *apple pie*.
-- Cita rasa dan kualitas makanan menjadi alasan utama memberikan rating tinggi.
-- Kata seperti **loved**, **best**, dan **tastier** sering muncul.
+#### ⭐ Rating 1
+- **Kata dominan:** veg, chicken, food, burger, pizza, bad, experience, like  
+- **Kesimpulan:** Pengguna kecewa dengan pengalaman makan mereka, meskipun menyebut menu seperti *burger* dan *pizza*. Kata *“bad”* dan *“experience”* menunjukkan kekecewaan terhadap rasa, kualitas, atau pelayanan yang tidak sesuai ekspektasi.
 
-**❌ Negatif:**
-- Pengguna kecewa karena porsi kecil (*half cup tea*), pengalaman buruk, atau pelayanan tidak memuaskan.
-- Alasan kuat lainnya adalah kata seperti **worst**, **looting**, dan **ignored**.
+#### ⭐⭐ Rating 2
+- **Kata dominan:** good, food, place, chicken, service, taste, ambience, price  
+- **Kesimpulan:** Walau ada beberapa pujian terhadap makanan dan tempat (*“good”*), rating tetap rendah kemungkinan karena **pelayanan lambat, harga tidak sepadan**, atau suasana yang kurang nyaman.
+
+#### ⭐⭐⭐ Rating 3
+- **Kata dominan:** good, taste, food, place, service, chicken, biryani, try  
+- **Kesimpulan:** Review netral, umumnya menunjukkan bahwa **makanan cukup enak tapi tidak luar biasa**. Kata *“try”* menunjukkan pengguna memberi saran tapi tidak sepenuhnya puas. Review seperti ini biasanya menandakan **pengalaman biasa saja**.
+
+#### ⭐⭐⭐⭐ Rating 4
+- **Kata dominan:** good, cake, food, chicken, best, try, chocolate  
+- **Kesimpulan:** Rating tinggi karena **menu spesifik yang disukai** seperti *cake*, *chocolate*, dan *chicken*. Pengguna puas tapi mungkin ada sedikit kekurangan yang membuat mereka tidak memberi rating 5.
+
+#### ⭐⭐⭐⭐⭐ Rating 5
+- **Kata dominan:** good, food, place, service, great, best, chicken, ambience, really  
+- **Kesimpulan:** Pengguna sangat puas dengan **kualitas makanan**, **pelayanan**, dan **suasana tempat**. Kata *“best”*, *“great”*, dan *“really”* menandakan review sangat positif. Ini review dari pelanggan yang mendapatkan pengalaman sesuai (atau melebihi) harapan.
 """)
 
 # 📥 Download Data
