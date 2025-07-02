@@ -58,10 +58,11 @@ if selected_restaurant != "Semua":
 
 # 📊 METRIK
 st.markdown("### 🔢 Statistik Review")
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Review", len(filtered_df))
 col2.metric("Rata-rata Rating", f"{filtered_df['Rating'].mean():.2f}")
 col3.metric("Review Positif", f"{(filtered_df['Sentiment'] == 'Positive').mean()*100:.1f}%")
+col4.metric("Review Negatif", f"{(filtered_df['Sentiment'] == 'Negative').mean()*100:.1f}%")
 
 # 📈 Distribusi Rating
 st.markdown("### 📈 Distribusi Rating")
