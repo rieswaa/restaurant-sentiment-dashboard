@@ -7,6 +7,7 @@ from textblob import TextBlob
 import random
 from collections import Counter
 import re
+import time
 
 # Setup halaman
 st.set_page_config(page_title="Restaurant Sentiment", layout="wide")
@@ -14,9 +15,12 @@ st.markdown("""
     <h1 style='text-align: center; color: #6c5ce7;'>🍽️ Restaurant Sentiment Dashboard</h1>
 """, unsafe_allow_html=True)
 
+# Animasi loading
+with st.spinner('Memuat data...'):
+    time.sleep(1)
+
 # Load dataset
 @st.cache_data
-
 def load_data():
     df = pd.read_csv("Restaurant reviews.csv")
     df = df.drop(columns=['7514'], errors='ignore')
@@ -121,7 +125,6 @@ elif menu == "Reviewer & Restoran":
 elif menu == "Review Positif & Negatif":
     st.markdown("### 💬 Contoh Review Positif & Negatif")
     col_pos, col_neg = st.columns(2)
-
     with col_pos:
         st.markdown("**✅ Positif**")
         pos_reviews = filtered_df[filtered_df['Sentiment'] == 'Positive']['Review']
@@ -129,7 +132,6 @@ elif menu == "Review Positif & Negatif":
             st.write(pos_reviews.sample(3, random_state=1).tolist())
         else:
             st.write("⚠️ Tidak ada review positif.")
-
     with col_neg:
         st.markdown("**❌ Negatif**")
         neg_reviews = filtered_df[filtered_df['Sentiment'] == 'Negative']['Review']
@@ -152,7 +154,6 @@ elif menu == "Kesimpulan Rating":
         common = Counter(filtered_words).most_common(8)
         word_list = ', '.join([w for w, _ in common])
         sample = subset['Review'].sample(1).iloc[0] if not subset.empty else "Tidak ada contoh."
-        
         st.markdown(f"""
         #### ⭐ Rating {rating}
         - **Kata dominan:** {word_list}
