@@ -160,8 +160,12 @@ for rating in range(rating_filter[0], rating_filter[1] + 1):
     st.markdown(f"- **Kata dominan:** {rating_summary[rating]['kata']}")
     st.markdown(f"- **Kesimpulan:** {rating_summary[rating]['kesimpulan']}")
 
-    example = subset['Review'].dropna().sample(1).values[0]
-    st.markdown(f"- **📝 Contoh Komentar:** _\"{example}\"_")
+    if st.button(f"🔁 Acak komentar rating {rating}", key=f"btn_{rating}"):
+        example = subset['Review'].dropna().sample(1).values[0]
+        st.markdown(f"- **📝 Contoh Komentar:** _\"{example}\"_")
+    else:
+        example = subset['Review'].dropna().sample(1, random_state=rating).values[0]
+        st.markdown(f"- **📝 Contoh Komentar:** _\"{example}\"_")
 
 # Tab 8 - Data Mentah
 with tab8:
