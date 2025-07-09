@@ -142,6 +142,7 @@ with tab6:
             st.write("⚠️ Tidak ada review negatif.")
 
 # Tab 7 - Kesimpulan Rating
+# Tab 7 - Kesimpulan Rating
 with tab7:
     st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
 
@@ -154,7 +155,7 @@ with tab7:
     }
 
     for rating in range(rating_filter[0], rating_filter[1] + 1):
-    subset = filtered_df[filtered_df['Rating'] == rating]
+        subset = filtered_df[filtered_df['Rating'] == rating]
         if len(subset) == 0:
             continue
         st.markdown(f"#### ⭐ Rating {rating}")
@@ -163,10 +164,8 @@ with tab7:
 
         if st.button(f"🔁 Acak komentar rating {rating}", key=f"btn_{rating}"):
             example = subset['Review'].dropna().sample(1).values[0]
-            st.markdown(f"- **📝 Contoh Komentar:** _\"{example}\"_")
         else:
             example = subset['Review'].dropna().sample(1, random_state=rating).values[0]
-            st.markdown(f"- **📝 Contoh Komentar:** _\"{example}\"_")
 
 
 # Tab 8 - Data Mentah
