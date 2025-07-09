@@ -138,25 +138,28 @@ with tab6:
             st.write("⚠️ Tidak ada review negatif.")
 
 # Tab 7 - Kesimpulan Rating
-with tab7:
-    st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
-    for rating in range(1, 6):
-        subset = filtered_df[filtered_df['Rating'] == rating]
-        if subset.empty:
-            continue
-        words = ' '.join(subset['Review'].dropna().astype(str).tolist()).lower()
-        tokens = re.findall(r'\b[a-zA-Z]{3,}\b', words)
-        stopwords = set(WordCloud().stopwords)
-        filtered_words = [w for w in tokens if w not in stopwords]
-        common = Counter(filtered_words).most_common(8)
-        word_list = ', '.join([w for w, _ in common])
-        sample = subset['Review'].sample(1).iloc[0] if not subset.empty else "Tidak ada contoh."
+st.markdown("### 📢 Alasan Umum dari Review")
+from collections import Counter
+import re
 
-        st.markdown(f"""
-        #### ⭐ Rating {rating}
-        - **Kata dominan:** {word_list}
-        - **Contoh komentar:** _\"{sample}\"_
-        """)
+# Tokenisasi & filtering
+tokens_pos = ' '.join(filtered_df[filtered_df['Sentiment']=='Positive']['Review']).lower()
+tokens_neg = ' '.join(filtered_df[filtered_df['Sentiment']=='Negative']['Review']).lower()
+words_pos = re.findall(r'\b[a-z]{3,}\b', tokens_pos)
+words_neg = re.findall(r'\b[a-z]{3,}\b', tokens_neg)
+
+stopwords = set(WordCloud().stopwords)
+filtered_words_pos = [w for w in words_pos if w not in stopwords]
+filtered_words_neg = [w for w in words_neg if w not in stopwords]
+
+common_pos = [w for w, _ in Counter(filtered_words_pos).most_common(10) if w not in ['the','and','was','very']]
+common_neg = [w for w, _ in Counter(filtered_words_neg).most_common(10) if w not in ['the','and','was','very']]
+
+reason_pos = f"🔹 **Alasan Positif**: Pelanggan menyukai hal-hal seperti _**{'**, **'.join(common_pos[:5])}**_."
+reason_neg = f"🔻 **Alasan Negatif**: Pelanggan mengeluh tentang _**{'**, **'.join(common_neg[:5])}**_."
+
+st.markdown(reason_pos)
+st.markdown(reason_neg)
 
 # Tab 8 - Data Mentah
 with tab8:
