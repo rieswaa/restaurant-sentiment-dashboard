@@ -138,26 +138,43 @@ with tab6:
             st.write("⚠️ Tidak ada review negatif.")
 
 # Tab 7 - Kesimpulan Rating
-st.markdown("### 📢 Alasan Umum dari Review")
+# 📌 Kesimpulan Alasan Rating Dinamis Sesuai Filter
+st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
 
-# Tokenisasi & filtering
-tokens_pos = ' '.join(filtered_df[filtered_df['Sentiment']=='Positive']['Review']).lower()
-tokens_neg = ' '.join(filtered_df[filtered_df['Sentiment']=='Negative']['Review']).lower()
-words_pos = re.findall(r'\b[a-z]{3,}\b', tokens_pos)
-words_neg = re.findall(r'\b[a-z]{3,}\b', tokens_neg)
+rating_summary = {
+    1: {
+        "kata": "veg, chicken, food, burger, pizza, bad, experience, like",
+        "kesimpulan": "Pengguna kecewa dengan pengalaman makan mereka, meskipun menyebut menu seperti *burger* dan *pizza*. Kata *“bad”* dan *“experience”* menunjukkan kekecewaan terhadap rasa, kualitas, atau pelayanan yang tidak sesuai ekspektasi."
+    },
+    2: {
+        "kata": "good, food, place, chicken, service, taste, ambience, price",
+        "kesimpulan": "Walau ada beberapa pujian terhadap makanan dan tempat (*“good”*), rating tetap rendah kemungkinan karena **pelayanan lambat, harga tidak sepadan**, atau suasana yang kurang nyaman."
+    },
+    3: {
+        "kata": "good, taste, food, place, service, chicken, biryani, try",
+        "kesimpulan": "Review netral, umumnya menunjukkan bahwa **makanan cukup enak tapi tidak luar biasa**. Kata *“try”* menunjukkan pengguna memberi saran tapi tidak sepenuhnya puas. Review seperti ini biasanya menandakan **pengalaman biasa saja**."
+    },
+    4: {
+        "kata": "good, cake, food, chicken, best, try, chocolate",
+        "kesimpulan": "Rating tinggi karena **menu spesifik yang disukai** seperti *cake*, *chocolate*, dan *chicken*. Pengguna puas tapi mungkin ada sedikit kekurangan yang membuat mereka tidak memberi rating 5."
+    },
+    5: {
+        "kata": "good, food, place, service, great, best, chicken, ambience, really",
+        "kesimpulan": "Pengguna sangat puas dengan **kualitas makanan**, **pelayanan**, dan **suasana tempat**. Kata *“best”*, *“great”*, dan *“really”* menandakan review sangat positif. Ini review dari pelanggan yang mendapatkan pengalaman sesuai (atau melebihi) harapan."
+    }
+}
 
-stopwords = set(WordCloud().stopwords)
-filtered_words_pos = [w for w in words_pos if w not in stopwords]
-filtered_words_neg = [w for w in words_neg if w not in stopwords]
-
-common_pos = [w for w, _ in Counter(filtered_words_pos).most_common(10) if w not in ['the','and','was','very']]
-common_neg = [w for w, _ in Counter(filtered_words_neg).most_common(10) if w not in ['the','and','was','very']]
-
-reason_pos = f"🔹 **Alasan Positif**: Pelanggan menyukai hal-hal seperti _**{'**, **'.join(common_pos[:5])}**_."
-reason_neg = f"🔻 **Alasan Negatif**: Pelanggan mengeluh tentang _**{'**, **'.join(common_neg[:5])}**_."
-
-st.markdown(reason_pos)
-st.markdown(reason_neg)
+for rating in range(rating_filter[0], rating_filter[1] + 1):
+    subset = filtered_df[filtered_df['Rating'] == rating]
+    if len(subset) == 0:
+        continue
+    st.markdown(f"#### ⭐ Rating {rating}")
+    st.markdown(f"- **Kata dominan:** {rating_summary[rating]['kata']}")
+    st.markdown(f"- **Kesimpulan:** {rating_summary[rating]['kesimpulan']}")
+    
+    # Contoh review acak
+    example = subset['Review'].dropna().sample(1, random_state=1).values[0]
+    st.markdown(f"- **📝 Contoh Komentar:** _\"{example}\"_")
 
 # Tab 8 - Data Mentah
 with tab8:
