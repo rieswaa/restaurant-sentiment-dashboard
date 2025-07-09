@@ -139,8 +139,6 @@ with tab6:
 
 # Tab 7 - Kesimpulan Rating
 st.markdown("### 📢 Alasan Umum dari Review")
-from collections import Counter
-import re
 
 # Tokenisasi & filtering
 tokens_pos = ' '.join(filtered_df[filtered_df['Sentiment']=='Positive']['Review']).lower()
