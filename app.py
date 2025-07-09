@@ -7,17 +7,12 @@ from textblob import TextBlob
 import random
 from collections import Counter
 import re
-import time
 
 # Setup halaman
 st.set_page_config(page_title="Restaurant Sentiment", layout="wide")
 st.markdown("""
     <h1 style='text-align: center; color: #6c5ce7;'>🍽️ Restaurant Sentiment Dashboard</h1>
 """, unsafe_allow_html=True)
-
-# Animasi loading
-with st.spinner('Memuat data...'):
-    time.sleep(1)
 
 # Load dataset
 @st.cache_data
@@ -53,18 +48,6 @@ selected_restaurant = st.sidebar.selectbox("Pilih Restoran", ["Semua"] + restaur
 start_date = st.sidebar.date_input("Tanggal Mulai", df['Time'].min().date())
 end_date = st.sidebar.date_input("Tanggal Akhir", df['Time'].max().date())
 
-# Navigasi
-menu = st.sidebar.radio("Navigasi", [
-    "Beranda",
-    "Distribusi Rating",
-    "Rating & Sentimen",
-    "Wordcloud",
-    "Reviewer & Restoran",
-    "Review Positif & Negatif",
-    "Kesimpulan Rating",
-    "Data Mentah"
-])
-
 # Terapkan filter
 filtered_df = df[
     (df['Rating'] >= rating_filter[0]) &
@@ -75,8 +58,20 @@ filtered_df = df[
 if selected_restaurant != "Semua":
     filtered_df = filtered_df[filtered_df['Restaurant'] == selected_restaurant]
 
-# SLIDE: BERANDA
-if menu == "Beranda":
+# Tabs Navigasi
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
+    "📊 Statistik", 
+    "📈 Distribusi Rating", 
+    "📉 Rating & Sentimen", 
+    "☁️ WordCloud", 
+    "🏅 Reviewer & Restoran", 
+    "💬 Positif & Negatif", 
+    "🧠 Kesimpulan Rating", 
+    "📄 Data Mentah"
+])
+
+# Tab 1 - Statistik
+with tab1:
     st.markdown("### 🔢 Statistik Review")
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Review", len(filtered_df))
@@ -84,24 +79,24 @@ if menu == "Beranda":
     col3.metric("Review Positif", f"{(filtered_df['Sentiment'] == 'Positive').mean()*100:.1f}%")
     col4.metric("Review Negatif", f"{(filtered_df['Sentiment'] == 'Negative').mean()*100:.1f}%")
 
-# SLIDE: Distribusi Rating
-elif menu == "Distribusi Rating":
+# Tab 2 - Distribusi Rating
+with tab2:
     st.markdown("### 📈 Distribusi Rating")
     fig1, ax1 = plt.subplots(figsize=(7, 4))
     sns.countplot(data=filtered_df, x='Rating', palette='Set2', ax=ax1)
     ax1.set_title("Distribusi Rating", fontsize=14)
     st.pyplot(fig1)
 
-# SLIDE: Rating dan Sentimen
-elif menu == "Rating & Sentimen":
+# Tab 3 - Rating dan Sentimen
+with tab3:
     st.markdown("### 📉 Rating berdasarkan Sentimen")
     fig2, ax2 = plt.subplots(figsize=(7, 4))
     sns.boxplot(data=filtered_df, x='Sentiment', y='Rating', palette='pastel', ax=ax2)
     ax2.set_title("Distribusi Rating berdasarkan Sentimen", fontsize=14)
     st.pyplot(fig2)
 
-# SLIDE: Wordcloud
-elif menu == "Wordcloud":
+# Tab 4 - Wordcloud
+with tab4:
     st.markdown("### ☁️ WordCloud Review")
     text = " ".join(filtered_df['Review'].dropna().astype(str).tolist())
     wordcloud = WordCloud(width=1000, height=300, background_color='#1c1c1c', colormap='Set2').generate(text)
@@ -110,8 +105,8 @@ elif menu == "Wordcloud":
     ax3.axis('off')
     st.pyplot(fig3)
 
-# SLIDE: Top Reviewer & Restoran
-elif menu == "Reviewer & Restoran":
+# Tab 5 - Reviewer & Restoran
+with tab5:
     st.markdown("### 🏅 Reviewer & Restoran Teratas")
     col_top1, col_top2 = st.columns(2)
     with col_top1:
@@ -121,10 +116,11 @@ elif menu == "Reviewer & Restoran":
         st.markdown("**🍽️ Restoran Paling Banyak Direview**")
         st.bar_chart(filtered_df['Restaurant'].value_counts().head(5))
 
-# SLIDE: Review Positif & Negatif
-elif menu == "Review Positif & Negatif":
+# Tab 6 - Review Positif & Negatif
+with tab6:
     st.markdown("### 💬 Contoh Review Positif & Negatif")
     col_pos, col_neg = st.columns(2)
+
     with col_pos:
         st.markdown("**✅ Positif**")
         pos_reviews = filtered_df[filtered_df['Sentiment'] == 'Positive']['Review']
@@ -132,6 +128,7 @@ elif menu == "Review Positif & Negatif":
             st.write(pos_reviews.sample(3, random_state=1).tolist())
         else:
             st.write("⚠️ Tidak ada review positif.")
+
     with col_neg:
         st.markdown("**❌ Negatif**")
         neg_reviews = filtered_df[filtered_df['Sentiment'] == 'Negative']['Review']
@@ -140,8 +137,8 @@ elif menu == "Review Positif & Negatif":
         else:
             st.write("⚠️ Tidak ada review negatif.")
 
-# SLIDE: Kesimpulan Rating
-elif menu == "Kesimpulan Rating":
+# Tab 7 - Kesimpulan Rating
+with tab7:
     st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
     for rating in range(1, 6):
         subset = filtered_df[filtered_df['Rating'] == rating]
@@ -154,14 +151,15 @@ elif menu == "Kesimpulan Rating":
         common = Counter(filtered_words).most_common(8)
         word_list = ', '.join([w for w, _ in common])
         sample = subset['Review'].sample(1).iloc[0] if not subset.empty else "Tidak ada contoh."
+
         st.markdown(f"""
         #### ⭐ Rating {rating}
         - **Kata dominan:** {word_list}
         - **Contoh komentar:** _\"{sample}\"_
         """)
 
-# SLIDE: Data Mentah
-elif menu == "Data Mentah":
+# Tab 8 - Data Mentah
+with tab8:
     st.markdown("### 📄 Data Mentah")
     st.dataframe(filtered_df)
     csv = filtered_df.to_csv(index=False).encode('utf-8')
