@@ -119,29 +119,26 @@ with tab5:
 # Tab 6 - Review Positif & Negatif
 with tab6:
     st.markdown("### 💬 Contoh Review Positif & Negatif")
-    col_pos, col_neg = st.columns(2)
 
-    with col_pos:
-        st.markdown("**✅ Positif**")
+    if st.button("🔁 Acak Komentar", key="acak_review"):
         pos_reviews = filtered_df[filtered_df['Sentiment'] == 'Positive']['Review']
-        if len(pos_reviews) >= 3:
-            st.write(pos_reviews.sample(3).tolist())
-        elif len(pos_reviews) > 0:
-            st.write(pos_reviews.tolist())
-        else:
-            st.write("⚠️ Tidak ada review positif.")
-
-    with col_neg:
-        st.markdown("**❌ Negatif**")
         neg_reviews = filtered_df[filtered_df['Sentiment'] == 'Negative']['Review']
-        if len(neg_reviews) >= 3:
-            st.write(neg_reviews.sample(3).tolist())
-        elif len(neg_reviews) > 0:
-            st.write(neg_reviews.tolist())
-        else:
-            st.write("⚠️ Tidak ada review negatif.")
+        with st.columns(2)[0]:
+            st.markdown("**✅ Positif**")
+            st.write(pos_reviews.sample(min(3, len(pos_reviews))).tolist() if len(pos_reviews) > 0 else "⚠️ Tidak ada review positif.")
+        with st.columns(2)[1]:
+            st.markdown("**❌ Negatif**")
+            st.write(neg_reviews.sample(min(3, len(neg_reviews))).tolist() if len(neg_reviews) > 0 else "⚠️ Tidak ada review negatif.")
+    else:
+        pos_reviews = filtered_df[filtered_df['Sentiment'] == 'Positive']['Review']
+        neg_reviews = filtered_df[filtered_df['Sentiment'] == 'Negative']['Review']
+        with st.columns(2)[0]:
+            st.markdown("**✅ Positif**")
+            st.write(pos_reviews.sample(min(3, len(pos_reviews)), random_state=1).tolist() if len(pos_reviews) > 0 else "⚠️ Tidak ada review positif.")
+        with st.columns(2)[1]:
+            st.markdown("**❌ Negatif**")
+            st.write(neg_reviews.sample(min(3, len(neg_reviews)), random_state=1).tolist() if len(neg_reviews) > 0 else "⚠️ Tidak ada review negatif.")
 
-# Tab 7 - Kesimpulan Rating
 # Tab 7 - Kesimpulan Rating
 with tab7:
     st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
