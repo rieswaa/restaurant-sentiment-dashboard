@@ -145,11 +145,11 @@ with tab6:
 st.markdown("### 📌 Kesimpulan Alasan Pengguna Memberi Rating")
 
 rating_summary = {
-    1: {"kata": "veg, chicken, food, burger, pizza, bad, experience, like", "kesimpulan": "Pengguna kecewa..."},
-    2: {"kata": "good, food, place, chicken, service, taste, ambience, price", "kesimpulan": "Walau ada..."},
-    3: {"kata": "good, taste, food, place, service, chicken, biryani, try", "kesimpulan": "Review netral..."},
-    4: {"kata": "good, cake, food, chicken, best, try, chocolate", "kesimpulan": "Rating tinggi..."},
-    5: {"kata": "good, food, place, service, great, best, chicken, ambience, really", "kesimpulan": "Pengguna sangat puas..."}
+    1: {"kata": "veg, chicken, food, burger, pizza, bad, experience, like", "kesimpulan": "Pengguna kecewa dengan pengalaman makan mereka, meskipun menyebut menu seperti *burger* dan *pizza*. Kata *“bad”* dan *“experience”* menunjukkan kekecewaan terhadap rasa, kualitas, atau pelayanan yang tidak sesuai ekspektasi."},
+    2: {"kata": "good, food, place, chicken, service, taste, ambience, price", "kesimpulan": "Walau ada beberapa pujian terhadap makanan dan tempat (*“good”*), rating tetap rendah kemungkinan karena **pelayanan lambat, harga tidak sepadan**, atau suasana yang kurang nyaman."},
+    3: {"kata": "good, taste, food, place, service, chicken, biryani, try", "kesimpulan": "Review netral, umumnya menunjukkan bahwa **makanan cukup enak tapi tidak luar biasa**. Kata *“try”* menunjukkan pengguna memberi saran tapi tidak sepenuhnya puas. Review seperti ini biasanya menandakan **pengalaman biasa saja**."},
+    4: {"kata": "good, cake, food, chicken, best, try, chocolate", "kesimpulan": "Rating tinggi karena **menu spesifik yang disukai** seperti *cake*, *chocolate*, dan *chicken*. Pengguna puas tapi mungkin ada sedikit kekurangan yang membuat mereka tidak memberi rating 5."},
+    5: {"kata": "good, food, place, service, great, best, chicken, ambience, really", "kesimpulan": "Pengguna sangat puas dengan **kualitas makanan**, **pelayanan**, dan **suasana tempat**. Kata *“best”*, *“great”*, dan *“really”* menandakan review sangat positif. Ini review dari pelanggan yang mendapatkan pengalaman sesuai (atau melebihi) harapan."}
 }
 
 for rating in range(rating_filter[0], rating_filter[1] + 1):
@@ -166,6 +166,7 @@ for rating in range(rating_filter[0], rating_filter[1] + 1):
     else:
         example = subset['Review'].dropna().sample(1, random_state=rating).values[0]
         st.markdown(f"- **📝 Contoh Komentar:** _\"{example}\"_")
+
 
 # Tab 8 - Data Mentah
 with tab8:
